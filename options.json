@@ -1,0 +1,12 @@
+{
+"folder":{
+  "Data":"./Data"
+},
+
+"file":{
+  "geneData":"Data/MergedProtData.csv",
+  "CHR14Data":"Data/CHR_14.csv.gz",
+  "CHR6Data":"Data/CHR_6.csv.gz",
+  "GWAS_IDS":"Data/GWAS_IDS.csv"
+  }
+}

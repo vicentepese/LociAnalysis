@@ -1,12 +1,23 @@
 {
 "folder":{
-  "Data":"./Data"
+  "Data":"./Data/",
+  "Outputs":"./Outputs/"
 },
 
 "file":{
   "geneData":"Data/MergedProtData.csv",
   "CHR14Data":"Data/CHR_14.csv.gz",
   "CHR6Data":"Data/CHR_6.csv.gz",
-  "GWAS_IDS":"Data/GWAS_IDS.csv"
-  }
+  "GWAS_IDS":"Data/GWAS_IDS.csv",
+  "GRCh37":"Data/GCF_000001405.25_GRCh37.p13_genomic.gff.gz",
+  "genePos":"Data/genePos.csv"
+  },
+
+"Outputs":{
+  "CHR14":"Outputs/CHR14_cisSnps.csv"
+},
+
+"posRange":1e6,
+"IGHlow":106032614,
+"IGHhigh":107288051
 }

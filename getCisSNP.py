@@ -41,7 +41,7 @@ def gene2PosRange(options):
 
     return genePos
 
-def getCisSNP(options, genePos, chrArray):
+def getCisSNP(options, genePos):
 
     AA_OpenFile = gzip.open(options['folder']['Data'] + 'CHR_14.csv.gz')
     next(AA_OpenFile)
@@ -110,7 +110,7 @@ def getCisSNP(options, genePos, chrArray):
                 snp.insert(0, gene)
                 writer.writerow(snp)
 
-def main(chrArray):
+def main():
 
     # Read options 
     with open('options.json','r') as inFile:

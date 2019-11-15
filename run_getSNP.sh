@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chrpre=`jq '.chrArray.getSNP' options.json` 
+chrpre=`jq '.chrArray.get' options.json` 
 if [[ -z "$chrpre" ]] ||  [[ $chrpre == *"all"* ]]
 then 
     echo "No chromosomes specified. SNP matches will be performed in all the chromosomes"

@@ -10,8 +10,9 @@
   "CHR6Data":"Data/CHR_6.csv.gz",
   "GWAS_IDS":"Data/GWAS_IDS.csv",
   "GRCh37":"Data/GCF_000001405.25_GRCh37.p13_genomic.gff.gz",
-  "genePos":"Data/genePos.csv"
-  },
+  "genePos":"Data/genePos.csv",
+  "NMDA":"Data/NMDA_data.csv"
+},
 
 "Outputs":{
   "CHR14":"Outputs/CHR14_cisSnps.csv"

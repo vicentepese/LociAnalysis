@@ -5,38 +5,6 @@ import os
 import sys 
 import gzip
 import argparse
-import loggging
-
-def argsParser():
-
-	# Define argument parser
-	parser = argparse.ArgumentParser(description='A script that cleans the  oxforf gen file')
-
-	# Add arguments
-	parser.add_argument('-ChrIndex', help= 'int: number of the chromosome to be parsed. Only for slurm', required=False)
-
-	# Initialize variables
-	args = parser.parse_args()
-
-	# If no CHR specified, analyze as specified in options
-	if not args.ChrIndex:
-		# Load options
-		with open("options.json", "r") as jsonFile:
-			options = json.load(jsonFile)
-		if isinstance(options['chrArray']['CHRpreprocess'], int):
-			chrArray = ["CHR" + str(options)]
-		else: 
-			chrArray = ["CHR" + str(s) for s in options['chrArray']['CHRpreprocess']]
-
-	# Else, analyze the inputed chromosome (slurm)
-	elif len(args.ChrIndex) > 1:
-		chrArray = ["CHR" + str(args.ChrIndex)]
-		print(" Len > 1" + chrArray)
-	elif len(args.ChrIndex) == 1:
-		print("Len = 1 " + chrArray)
-		chrArray = ["CHR" + str(args.ChrIndex)]
-
-	return chrArray
 
 def gene2PosRange(options):
 
@@ -73,10 +41,9 @@ def gene2PosRange(options):
 
     return genePos
 
-def getCisSNP(options, genePos):
+def getCisSNP(options, genePos, chrArray):
 
-    # Open Association Analysis results
-    AA_OpenFile = gzip.open(options['file']['CHR14Data'])
+    AA_OpenFile = gzip.open(options['folder']['Data'] + 'CHR_14.csv.gz')
     next(AA_OpenFile)
 
     # Genes in AA
@@ -87,7 +54,7 @@ def getCisSNP(options, genePos):
     line = 0
     for snp in AA_OpenFile:
         print('Current line ' +str(line) + '\r')
-       
+    
         # If the SNP is not modulating a pair:
         if '&' not in str(snp).split(',')[1]:
                 
@@ -132,12 +99,10 @@ def getCisSNP(options, genePos):
     saveTotalCisChr14 = cisSNPreg
     for gene in list(cisSNPreg.keys()):
         if len(cisSNPreg[gene]) > 0:
-            with open(options['folder']['Outputs'] + gene + '.csv','w') as outFile:
-                cisSNPreg[gene].insert(0,['LowerPos','HighPos','snpsRS','SNP','geneSNP','statistic','pvalue','FDR','beta'])
-                writer = csv.writer(outFile)
-                writer.writerows(cisSNPreg[gene])
-    
-    with open(options['folder']['Outputs'] + 'CHR14_cisSnps.csv', 'w') as outFile:
+            cisSNPreg[gene].insert(0,['LowerPos','HighPos','snpsRS','SNP','geneSNP','statistic','pvalue','FDR','beta'])
+
+
+    with open(options['folder']['Outputs'] + 'CHR_14_cis.csv', 'w') as outFile:
         writer = csv.writer(outFile)
         writer.writerow(['gene','LowerPos','HighPos','snpsRS','SNP','geneSNP','statistic','pvalue','FDR','beta'])
         for gene in list(saveTotalCisChr14.keys()):
@@ -145,14 +110,14 @@ def getCisSNP(options, genePos):
                 snp.insert(0, gene)
                 writer.writerow(snp)
 
-def main():
-    
+def main(chrArray):
+
     # Read options 
     with open('options.json','r') as inFile:
         options = json.load(inFile)
 
     # Get position range for each gene
-    if 'genePos.csv' not in os.listdir(options['folder']['Data']):
+    if 'genePos.csv' not in os.listdir(options['folder']['Resources']):
         genePos = gene2PosRange(options)
     else:
         with open(options['file']['genePos'],'r') as inFile:
@@ -163,8 +128,7 @@ def main():
                 genePos.append(row)
 
     # Find SNP Cis-Regulator
-    if 'CHR14_cisSnps' not in os.listdir(options['folder']['Outputs']):
-        getCisSNP(options, genePos)
+    getCisSNP(options, genePos)
 
 
 

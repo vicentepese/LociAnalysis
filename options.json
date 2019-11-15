@@ -1,15 +1,16 @@
 {
 "folder":{
   "Data":"/scratch/users/vipese/GeneticAssociation/AA_GzipOutputs/",
-  "Outputs":"/scratch/users/vipese/LociAnalysis/Outputs/"
+  "Outputs":"/scratch/users/vipese/LociAnalysis/Outputs/",
+  "Resources":"./Resources/"
 },
 
 "file":{
   "geneData":"/scratch/users/vipese/GeneticAssociation/ProteinData/MergedProtData.csv",
   "GWAS_IDS":"/scratch/users/vipese/GeneticAssociation/ProteinData/GWAS_IDS.csv",
-  "GRCh37":"Resources/GCF_000001405.25_GRCh37.p13_genomic.gff.gz",
-  "genePos":"Resources/genePos.csv",
-  "NMDA":"Resources/NMDA_data.csv"
+  "GRCh37":"./Resources/GCF_000001405.25_GRCh37.p13_genomic.gff.gz",
+  "genePos":"./Resources/genePos.csv",
+  "NMDA":"./Resources/NMDA_data.csv"
 },
 
 "Outputs":{
@@ -18,5 +19,11 @@
 
 "posRange":1e6,
 "IGHlow":106032614,
-"IGHhigh":107288051
+"IGHhigh":107288051,
+
+"chrArray":{
+  "getSNP":"all"
 }
+
+}
+

@@ -4,6 +4,39 @@ import csv
 import os 
 import sys 
 import gzip
+import argparse
+import loggging
+
+def argsParser():
+
+	# Define argument parser
+	parser = argparse.ArgumentParser(description='A script that cleans the  oxforf gen file')
+
+	# Add arguments
+	parser.add_argument('-ChrIndex', help= 'int: number of the chromosome to be parsed. Only for slurm', required=False)
+
+	# Initialize variables
+	args = parser.parse_args()
+
+	# If no CHR specified, analyze as specified in options
+	if not args.ChrIndex:
+		# Load options
+		with open("options.json", "r") as jsonFile:
+			options = json.load(jsonFile)
+		if isinstance(options['chrArray']['CHRpreprocess'], int):
+			chrArray = ["CHR" + str(options)]
+		else: 
+			chrArray = ["CHR" + str(s) for s in options['chrArray']['CHRpreprocess']]
+
+	# Else, analyze the inputed chromosome (slurm)
+	elif len(args.ChrIndex) > 1:
+		chrArray = ["CHR" + str(args.ChrIndex)]
+		print(" Len > 1" + chrArray)
+	elif len(args.ChrIndex) == 1:
+		print("Len = 1 " + chrArray)
+		chrArray = ["CHR" + str(args.ChrIndex)]
+
+	return chrArray
 
 def gene2PosRange(options):
 

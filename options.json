@@ -2,6 +2,8 @@
 "folder":{
   "Data":"/scratch/users/vipese/GeneticAssociation/AA_GzipOutputs/",
   "Outputs":"/scratch/users/vipese/LociAnalysis/Outputs/",
+  "chrPlot":"/scratch/users/vipese/LociAnalysis/chrPlot/",
+  "GWAS_Manhattan":"/scratch/users/vipese/LociAnalysis/GWAS_Manhattan/",
   "Resources":"./Resources/"
 },
 
@@ -23,6 +25,10 @@
 
 "chrArray":{
   "getSNP":"all"
+},
+
+"getTrans":{
+  "pval_thres":5e-4
 }
 
 }

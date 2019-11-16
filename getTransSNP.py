@@ -87,28 +87,30 @@ def filterSNPS(SNPS):
 
 def main(chrArray):
 
-    # Read options
-    with open('options.json','r') as inFile:
-        options = json.load(inFile)
+    for chr in chrArray:
 
-    # Extract positions 
-    SNPS = extractPos(options, 'CHR_14')
+        # Read options
+        with open('options.json','r') as inFile:
+            options = json.load(inFile)
 
-    # Filter: take minimum pvalue for each position
-    SNPS_filt = filterSNPS(SNPS)
+        # Extract positions 
+        SNPS = extractPos(options, chr)
 
-    # Store the array 
-    SNPS_lists = list()
-    for pos in list(SNPS_filt.keys()):
-        item_app = [pos]
-        item_app.extend(SNPS_filt[pos])
-        SNPS_lists.append(item_app)
+        # Filter: take minimum pvalue for each position
+        SNPS_filt = filterSNPS(SNPS)
 
-    with open(options['folder']['chrPlot'] + chr + '.csv', 'w') as outFile:
-        writer = csv.writer(outFile)
-        writer.writerows(SNPS_lists)
+        # Store the array 
+        SNPS_lists = list()
+        for pos in list(SNPS_filt.keys()):
+            item_app = [pos]
+            item_app.extend(SNPS_filt[pos])
+            SNPS_lists.append(item_app)
 
-    
+        with open(options['folder']['chrPlot'] + chr + '.csv', 'w') as outFile:
+            writer = csv.writer(outFile)
+            writer.writerows(SNPS_lists)
+
+        
 if __name__ == "__main__":
     chrArray = argsParser()
     main(chrArray)

@@ -5,6 +5,7 @@ import os
 import sys 
 import gzip
 import argparse
+from collections import OrderedDict, defaultdict
 
 def argsParser():
 
@@ -22,96 +23,108 @@ def argsParser():
 		# Load options
 		with open("options.json", "r") as jsonFile:
 			options = json.load(jsonFile)
-		if isinstance(options['chrArray']['CHRpreprocess'], int):
+		if isinstance(options['chrArray']['getSNP'], int):
 			chrArray = ["CHR_" + str(options)]
-		else: 
-			chrArray = ["CHR_" + str(s) for s in options['chrArray']['CHRpreprocess']]
+		elif 'all' in options['chrArray']['getSNP']: 
+			chrArray = ["CHR_" + str(s) for s in range(1,23)]
 
 	# Else, analyze the inputed chromosome (slurm)
 	elif len(args.ChrIndex) > 1:
 		chrArray = ["CHR_" + str(args.ChrIndex)]
+		print(chrArray)
 	elif len(args.ChrIndex) == 1:
 		chrArray = ["CHR_" + str(args.ChrIndex)]
+		print(chrArray)
 
 	return chrArray
 
 def extractPos(options, chr):
 
-    # Open file 
-    OpenFile = gzip.open(options['folder']['Data'] + chr +'.csv.gz')
-    next(OpenFile)
+	# Open file 
+	print("Opening " + options['folder']['Data'] + chr +'.csv.gz')
+	OpenFile = gzip.open(options['folder']['Data'] + chr +'.csv.gz')
+	next(OpenFile)
 
-    # Create dict where key is a position
-    SNPS = dict()
-    line = 1
-    print("Processing file")
-    for snp in OpenFile:
+	# Create dict where key is a position
+	SNPS = defaultdict(list)
+	line = 1
+	print("Processing file")
+	for snp in OpenFile:
 
-        if line % 100000 == 0:
-            print('Current line: ' +  str(line))
+		try:
+			if line % 10000 == 0:
+				print('Current line: ' +  str(line))
 
-        # Filter by pvalue (continue if bigger than pvalue threshold)
-        if float(str(snp).split(',')[3]) > options['getTrans']['pval_thres'] or '&' in str(snp).split(',')[1]:
-            continue
+			# Filter by pvalue (continue if bigger than pvalue threshold) and pair of genes
+			if float(str(snp).split(',')[3]) > options['getTrans']['pval_thres'] or '&' in str(snp).split(',')[1]:
+				line += 1
+				continue
 
-        # Take position 
-        if 'rs' in str(snp).split(',')[0]: 
-            pos = str(snp).split(',')[0].split(':')[-1]
-        else:
-            pos = str(snp).split(',')[0][2:]
+			# Take position 
+			if 'rs' in str(snp).split(',')[0]: 
+				pos = str(snp).split(',')[0].split(':')[-1]
+			else:
+				pos = str(snp).split(',')[0][2:]
 
-        # Append to dict
-        if pos in list(SNPS.keys()):
-            SNPS[pos].append([str(snp).split(',')[1], str(snp).split(',')[3]])
-        else:
-            SNPS[pos] = [[str(snp).split(',')[1], str(snp).split(',')[3]]]
-        line += 1
+			# Using dicts is too slow, use
+			SNPS[pos].append([str(snp).split(',')[1], str(snp).split(',')[3]])
 
-    return SNPS 
+		except:
+			continue
+
+		line += 1
+
+	return SNPS 
+
 
 def filterSNPS(SNPS):
 
-    # For each position 
-    for pos in list(SNPS.keys()):
+	print('Filtering file')
 
-        # Get pvalues
-        pvals = np.asarray([float(gene[1]) for gene in SNPS[pos]])
-        
-        # Get index of the minimum pvalue
-        pval_idx = np.where(pvals == min(pvals))
+	# For each position
+	line = 1
+	print("Filtering")
+	for pos in list(SNPS.keys()):
 
-        # Keep only the gene with minimum pvalue
-        SNPS[pos] = SNPS[pos][pval_idx[0][0]]
+		# Verbose
+		if line % 10000 == 0:
+			print(str(line))
+		line += 1
 
-    return SNPS
+		# Get pvals 
+		pvals = np.asarray([pval[-1] for pval in SNPS[pos]])
+
+		# Get idx
+		minpval = np.argmin(pvals)
+
+		# Keep 
+		SNPS[pos] = SNPS[pos][minpval]
+
+	return SNPS
 
 def main(chrArray):
 
-    for chr in chrArray:
+	for chr in chrArray:
 
-        # Read options
-        with open('options.json','r') as inFile:
-            options = json.load(inFile)
+		# Read options
+		with open('options.json','r') as inFile:
+			options = json.load(inFile)
 
-        # Extract positions 
-        SNPS = extractPos(options, chr)
+		# Extract positions 
+		SNPS = extractPos(options, chr)
 
-        # Filter: take minimum pvalue for each position
-        SNPS_filt = filterSNPS(SNPS)
+		# Filter: take minimum pvalue for each position
+		SNPS_filt = filterSNPS(SNPS)
 
-        # Store the array 
-        SNPS_lists = list()
-        for pos in list(SNPS_filt.keys()):
-            item_app = [pos]
-            item_app.extend(SNPS_filt[pos])
-            SNPS_lists.append(item_app)
+		# Store 
+		with open(options['folder']['filtChrPlot'] + chr + '.csv', 'w') as outFile:
+			writer = csv.writer(outFile)
+			for pos in list(SNPS_filt.keys()):
+				item = [pos, SNPS_filt[pos]]
+				writer.writerow(item)
 
-        with open(options['folder']['chrPlot'] + chr + '.csv', 'w') as outFile:
-            writer = csv.writer(outFile)
-            writer.writerows(SNPS_lists)
-
-        
+		
 if __name__ == "__main__":
-    chrArray = argsParser()
-    main(chrArray)
+	chrArray = argsParser()
+	main(chrArray)
 

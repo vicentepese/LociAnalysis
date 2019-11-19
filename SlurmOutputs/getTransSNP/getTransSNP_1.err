@@ -1,6 +1,1 @@
-Traceback (most recent call last):
-  File "getTransSNP.py", line 114, in <module>
-    main(chrArray)
-  File "getTransSNP.py", line 107, in main
-    with open(options['folder']['chrPlot'] + chr + '.csv', 'w') as outFile:
-TypeError: Can't convert 'builtin_function_or_method' object to str implicitly
+slurmstepd: error: *** JOB 54939167 ON sh-114-11 CANCELLED AT 2019-11-18T15:03:13 ***

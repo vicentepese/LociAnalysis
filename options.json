@@ -1,9 +1,9 @@
 {
 "folder":{
-  "Data":"/scratch/users/vipese/GeneticAssociation/AA_GzipOutputs/",
+  "Data":"/scratch/users/vipese/GeneticAssociation/Outputs/",
   "Outputs":"/scratch/users/vipese/LociAnalysis/Outputs/",
   "chrPlot":"/scratch/users/vipese/LociAnalysis/chrPlot/",
-  "filtChrPlot": "/scratch/users/vipese/LociAnalysis/filtChrPlot",
+  "filtChrPlot": "/scratch/users/vipese/LociAnalysis/filtChrPlot/",
   "GWAS_Manhattan":"/scratch/users/vipese/LociAnalysis/GWAS_Manhattan/",
   "Resources":"./Resources/"
 },

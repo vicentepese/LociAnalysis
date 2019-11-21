@@ -3,7 +3,7 @@
 #SBATCH --job-name=getTransSNP_%a
 #SBATCH -p mignot
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=20G
+#SBATCH --mem-per-cpu=10G
 #SBATCH --output=../SlurmOutputs/getTransSNP/getTransSNP_%a.out
 #SBATCH --error=../SlurmOutputs/getTransSNP/getTransSNP_%a.err
 #SBATCH --nodes=1
